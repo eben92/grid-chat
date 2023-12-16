@@ -109,29 +109,29 @@ function sendErrorMessage(channel_id: string, message?: string) {
 
 async function sendMessage(channel_id: string, content: string) {
   const bot = await createBotAccount();
-  const insertResult = await db.insert(messages).values({
-    author_id: bot.id,
-    content,
-    channel_id,
+  const insertResult = await db
+    .insert(messages)
+    .values({
+      author_id: bot.id,
+      content,
+      channel_id,
+    })
+    .returning({ insertId: messages.id })
+    .then((res) => res[0]);
+
+  const message = await db
+    .select()
+    .from(messages)
+    .where(eq(messages.id, Number(insertResult.insertId)));
+
+  await channels.chat.message_sent.publish([channel_id], {
+    ...message[0],
+    attachment: null,
+    reply_id: null,
+    reply_message: null,
+    reply_user: null,
+    author: bot,
   });
-
-  console.log(insertResult);
-
-  return insertResult;
-
-  // const message = await db
-  //   .select()
-  //   .from(messages)
-  //   .where(eq(messages.id, Number(insertResult.rows)));
-
-  // await channels.chat.message_sent.publish([channel_id], {
-  //   ...message[0],
-  //   attachment: null,
-  //   reply_id: null,
-  //   reply_message: null,
-  //   reply_user: null,
-  //   author: bot,
-  // });
 }
 
 declare global {

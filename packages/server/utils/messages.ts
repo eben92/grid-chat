@@ -87,7 +87,8 @@ export async function createMessage(
       reply_id: input.reply,
       embeds: embeds.length === 0 ? null : embeds,
     })
-    .then((res) => Number(res.insertId));
+    .returning({ insertId: messages.id })
+    .then((res) => Number(res[0].insertId));
 
   db.update(messageChannels)
     .set({
