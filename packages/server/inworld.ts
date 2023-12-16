@@ -109,11 +109,15 @@ function sendErrorMessage(channel_id: string, message?: string) {
 
 async function sendMessage(channel_id: string, content: string) {
   const bot = await createBotAccount();
-  const insertResult = await db.insert(messages).values({
-    author_id: bot.id,
-    content,
-    channel_id,
-  });
+  const insertResult = await db
+    .insert(messages)
+    .values({
+      author_id: bot.id,
+      content,
+      channel_id,
+    })
+    .returning({ insertId: messages.id })
+    .then((res) => res[0]);
 
   const message = await db
     .select()
@@ -136,11 +140,14 @@ declare global {
 
 async function createBotAccount() {
   if (global.bot_account != null) return global.bot_account;
-  await db.insert(users).ignore().values({
-    id: "grid",
-    name: "Grid AI",
-    is_ai: true,
-  });
+  await db
+    .insert(users)
+    .values({
+      id: "grid",
+      name: "Grid AI",
+      is_ai: true,
+    })
+    .onConflictDoNothing();
   const user = await db
     .select()
     .from(users)

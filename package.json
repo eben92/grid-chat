@@ -1,25 +1,34 @@
 {
   "name": "grid-chat",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "start": "dotenv -- turbo start",
     "dev": "dotenv -- turbo dev",
     "build": "dotenv -- turbo build",
     "lint": "turbo lint",
-    "db:push": "dotenv -- drizzle-kit push:mysql"
+    "db:push": "dotenv -- drizzle-kit push:pg",
+    "db:generate": "dotenv -- drizzle-kit generate:pg",
+    "db:pull": "dotenv -- drizzle-kit introspect:pg",
+    "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
+    "@typescript-eslint/parser": "^6.14.0",
     "autoprefixer": "^10.4.13",
     "dotenv-cli": "^7.2.1",
-    "drizzle-kit": "^0.18.1",
-    "eslint": "8.33.0",
-    "eslint-config-next": "13.1.6",
+    "eslint": "8.54.0",
+    "eslint-config-next": "13.4.11",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.3.2",
     "tailwindcss-animate": "^1.0.6",
     "tailwindcss-radix": "^2.7.0",
     "turbo": "^1.10.2"
-  }
+  },
+  "dependencies": {
+    "@types/node": "18.11.18",
+    "drizzle-kit": "^0.19.5",
+    "typescript": "^5.2.2"
+  },
+  "packageManager": "pnpm@8.10.2"
 }

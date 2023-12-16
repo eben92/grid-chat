@@ -1,55 +1,54 @@
 import {
-    ColumnBaseConfig,
-    ColumnBuilderBaseConfig,
-    Equal,
-    MakeColumnConfig,
+  ColumnBaseConfig,
+  ColumnBuilderBaseConfig,
+  MakeColumnConfig,
 } from "drizzle-orm";
 import {
-    AnyMySqlTable,
-    MySqlTimestampBuilder as DefaultBuilder,
-    MySqlTimestampBuilderInitial,
-    MySqlTimestampConfig,
-    MySqlTimestampHKT,
-    MySqlTimestampStringBuilder,
-    MySqlTimestamp as DefaultMySqlTimestamp,
-} from "drizzle-orm/mysql-core";
+  AnyPgTable,
+  PgTimestampBuilder as DefaultBuilder,
+  PgTimestamp as DefaultPgTimestamp,
+  PgTimestampBuilderInitial,
+  PgTimestampConfig,
+  PgTimestampStringBuilder,
+} from "drizzle-orm/pg-core";
 
-export class MySqlTimestampBuilder<
-    T extends ColumnBuilderBaseConfig
+export class PgTimestampBuilder<
+  T extends ColumnBuilderBaseConfig
 > extends DefaultBuilder<T> {
-    constructor(name: T["name"], config: MySqlTimestampConfig | undefined) {
-        super(name, config);
-    }
+  constructor(name: T["name"], config: PgTimestampConfig | undefined) {
+    super(name, config?.withTimezone || false, config?.precision);
+  }
 
-    build<TTableName extends string>(
-        table: AnyMySqlTable<{ name: TTableName }>
-    ): MySqlTimestamp<MakeColumnConfig<T, TTableName>> {
-        return new MySqlTimestamp<MakeColumnConfig<T, TTableName>>(
-            table,
-            this.config
-        );
-    }
+  build<TTableName extends string>(
+    table: AnyPgTable<{ name: TTableName }>
+  ): PgTimestamp<MakeColumnConfig<T, TTableName>> {
+    return new PgTimestamp<MakeColumnConfig<T, TTableName>>(table, this.config);
+  }
 }
 
-export class MySqlTimestamp<
-    T extends ColumnBaseConfig
-> extends DefaultMySqlTimestamp<T> {
-    override mapFromDriverValue(value: string): Date {
-        return new Date(value + " UTC");
-    }
+export class PgTimestamp<
+  T extends ColumnBaseConfig
+> extends DefaultPgTimestamp<T> {
+  override mapFromDriverValue: (value: string) => Date = (value: string) => {
+    return new Date(value + " UTC");
+  };
 
-    override mapToDriverValue(value: Date): string {
-        return value.toISOString();
-    }
+  override mapToDriverValue: (value: Date) => string = (value: Date) => {
+    return value.toISOString();
+  };
 }
 
 export function timestamp<TName extends string>(
-    name: TName,
-    config?: MySqlTimestampConfig<"date">
-): MySqlTimestampBuilderInitial<TName>;
-export function timestamp(name: string, config: MySqlTimestampConfig = {}) {
-    if (config.mode === "string") {
-        return new MySqlTimestampStringBuilder(name, config);
-    }
-    return new MySqlTimestampBuilder(name, config);
+  name: TName,
+  config?: PgTimestampConfig<"date">
+): PgTimestampBuilderInitial<TName>;
+export function timestamp(name: string, config: PgTimestampConfig = {}) {
+  if (config.mode === "string") {
+    return new PgTimestampStringBuilder(
+      name,
+      config?.withTimezone || false,
+      config?.precision
+    );
+  }
+  return new PgTimestampBuilder(name, config);
 }

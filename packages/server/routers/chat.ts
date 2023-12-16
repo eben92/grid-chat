@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { channels } from "../ably";
 import { z } from "zod";
-import { protectedProcedure, router } from "./../trpc";
+import { protectedProcedure, router } from "../trpc";
 import { contentSchema } from "shared/schema/chat";
 import { getLastRead, setLastRead } from "../redis/last-read";
 import db from "db/client";
@@ -47,7 +47,7 @@ export const chatRouter = router({
                 eq(directMessageInfos.open, false)
               )
             );
-          is_new_dm = result.rowsAffected !== 0;
+          is_new_dm = result.rowCount !== 0;
         }
 
         return {
@@ -130,7 +130,7 @@ export const chatRouter = router({
           )
         );
 
-      if (rows.rowsAffected === 0)
+      if (rows.rowCount === 0)
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "No permission or message doesn't exist",

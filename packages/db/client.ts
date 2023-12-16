@@ -1,11 +1,22 @@
-import { drizzle } from "drizzle-orm/planetscale-serverless";
-import { connect } from "@planetscale/database";
+// import { drizzle } from "drizzle-orm/postgres-js";
+// import postgres from "postgres";
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon, neonConfig } from "@neondatabase/serverless";
 
-// create the connection
-const connection = connect({
-    url: process.env.DATABASE_URL,
-});
+const connectionString = process.env.DATABASE_URL as string;
 
-const db = drizzle(connection);
+if (!connectionString) {
+  throw new Error("DATABASE_URL is not set");
+}
+
+neonConfig.fetchConnectionCache = true;
+
+// const client = postgres(connectionString, {
+//   prepare: false,
+// });
+
+const sql = neon(connectionString);
+
+const db = drizzle(sql);
 
 export default db;
