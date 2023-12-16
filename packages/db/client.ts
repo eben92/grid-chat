@@ -15,8 +15,14 @@ neonConfig.fetchConnectionCache = true;
 //   prepare: false,
 // });
 
-const client = neon(connectionString);
+const sql = neon(connectionString);
 
-const db = drizzle(client);
+const db = drizzle(sql);
+
+export async function HelloWorld() {
+  const [dbRes] = await sql`SELECT NOW()`;
+
+  return dbRes;
+}
 
 export default db;
