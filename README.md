@@ -28,6 +28,11 @@ This repository is a monorepo ([Turborepo](https://turbo.build/)).
 <br />
 **Learn More:** https://grid-chat.vercel.app/info
 
+## TODO
+
+[ ]: migrate from PlanetScale to NEON DB
+[ ]: add Google OAuth
+
 ## Play with it Locally
 
 Grid Chat integrated with many third-party service for supporting wide spectrum of features and work perfectly on serverless environment.
@@ -76,4 +81,5 @@ pnpm run build
 ```
 
 It should be able to deploy on Vercel or any other platforms.
+
 # grid-chat
