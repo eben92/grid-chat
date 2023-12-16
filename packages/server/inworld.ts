@@ -115,19 +115,23 @@ async function sendMessage(channel_id: string, content: string) {
     channel_id,
   });
 
-  const message = await db
-    .select()
-    .from(messages)
-    .where(eq(messages.id, Number(insertResult.insertId)));
+  console.log(insertResult);
 
-  await channels.chat.message_sent.publish([channel_id], {
-    ...message[0],
-    attachment: null,
-    reply_id: null,
-    reply_message: null,
-    reply_user: null,
-    author: bot,
-  });
+  return insertResult;
+
+  // const message = await db
+  //   .select()
+  //   .from(messages)
+  //   .where(eq(messages.id, Number(insertResult.rows)));
+
+  // await channels.chat.message_sent.publish([channel_id], {
+  //   ...message[0],
+  //   attachment: null,
+  //   reply_id: null,
+  //   reply_message: null,
+  //   reply_user: null,
+  //   author: bot,
+  // });
 }
 
 declare global {
@@ -136,11 +140,14 @@ declare global {
 
 async function createBotAccount() {
   if (global.bot_account != null) return global.bot_account;
-  await db.insert(users).ignore().values({
-    id: "grid",
-    name: "Grid AI",
-    is_ai: true,
-  });
+  await db
+    .insert(users)
+    .values({
+      id: "grid",
+      name: "Grid AI",
+      is_ai: true,
+    })
+    .onConflictDoNothing();
   const user = await db
     .select()
     .from(users)
