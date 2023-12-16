@@ -6,12 +6,12 @@
   "dependencies": {
     "@neondatabase/serverless": "^0.6.0",
     "@planetscale/database": "^1.7.0",
-    "drizzle-orm": "^0.27.0",
+    "drizzle-orm": "^0.27.2",
     "postgres": "^3.4.3"
   },
   "devDependencies": {
     "@types/node": "18.11.18",
     "config": "workspace:*",
-    "drizzle-kit": "^0.20.6"
+    "drizzle-kit": "^0.19.5"
   }
 }

@@ -12,7 +12,7 @@
     "ably-builder": "workspace:*",
     "cloudinary": "^1.37.0",
     "db": "workspace:*",
-    "drizzle-orm": "^0.27.0",
+    "drizzle-orm": "^0.27.2",
     "next": "13.4.11",
     "next-auth": "^4.22.1",
     "open-graph-scraper": "^6.1.0",

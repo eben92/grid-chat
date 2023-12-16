@@ -6,8 +6,11 @@ if (url == null) {
 }
 
 export default {
-  out: "./packages/db",
+  out: "./packages/migrations",
   schema: "./packages/db/schema.ts",
-  connectionString: url,
+  driver: "pg",
+  dbCredentials: {
+    connectionString: url,
+  },
   breakpoints: true,
 } satisfies Config;

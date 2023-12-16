@@ -26,7 +26,7 @@
     "cloudinary": "^1.37.0",
     "clsx": "^1.2.1",
     "db": "workspace:*",
-    "drizzle-orm": "^0.26.5",
+    "drizzle-orm": "^0.27.2",
     "lucide-react": "^0.244.0",
     "marked-react": "^1.3.2",
     "next": "13.4.11",
