@@ -6,7 +6,7 @@ if (url == null) {
 }
 
 export default {
-  out: "./packages/migrations",
+  out: "./packages/db/migrations",
   schema: "./packages/db/schema.ts",
   driver: "pg",
   dbCredentials: {

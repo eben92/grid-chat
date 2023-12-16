@@ -1,16 +1,15 @@
 import {
   ColumnBaseConfig,
   ColumnBuilderBaseConfig,
-  Equal,
   MakeColumnConfig,
 } from "drizzle-orm";
 import {
   AnyPgTable,
   PgTimestampBuilder as DefaultBuilder,
+  PgTimestamp as DefaultPgTimestamp,
   PgTimestampBuilderInitial,
   PgTimestampConfig,
   PgTimestampStringBuilder,
-  PgTimestamp as DefaultPgTimestamp,
 } from "drizzle-orm/pg-core";
 
 export class PgTimestampBuilder<
