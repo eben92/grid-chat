@@ -1,8 +1,11 @@
 {
-    "extends": "next/core-web-vitals",
-    "parserOptions": {
-        "babelOptions": {
-            "presets": ["./apps/web/node_modules/next/babel"]
-        }
+  "extends": "next/core-web-vitals",
+  "ignorePatterns": ["apps/**", "packages/**", "./**.ts"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "babelOptions": {
+      "project": true,
+      "presets": ["./apps/web/node_modules/next/babel"]
     }
+  }
 }
