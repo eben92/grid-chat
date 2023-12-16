@@ -3,7 +3,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import redis from "./client";
 import { Context } from "../trpc";
 
-export const createTRPCUpstashLimiter = defineTRPCLimiter({
+export const createTRPCUpstashLimiter: any = defineTRPCLimiter({
   store: (opts) => {
     if (process.env.NODE_ENV === "development") return null;
 
