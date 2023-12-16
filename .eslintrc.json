@@ -1,6 +1,6 @@
 {
   "extends": "next/core-web-vitals",
-  "ignorePatterns": ["apps/**", "packages/**", "./**.ts"],
+  "ignorePatterns": ["apps/**", "packages/**"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "babelOptions": {
