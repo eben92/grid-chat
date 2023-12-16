@@ -7,7 +7,7 @@ import {
 import { ReactNode, useState } from "react";
 import { trpc } from "@/utils/trpc";
 import { Avatar } from "ui/components/avatar";
-import { Button, button } from "ui/components/button";
+import { Button, buttonVariants } from "ui/components/button";
 import Router from "next/router";
 import { Spinner } from "ui/components/spinner";
 
@@ -107,7 +107,7 @@ function Content({ userId, onClose }: { userId: string; onClose: () => void }) {
           >
             Send Message
           </Button>
-          <DialogClose className={button({ color: "secondary" })}>
+          <DialogClose className={buttonVariants({ color: "secondary" })}>
             Close
           </DialogClose>
         </div>

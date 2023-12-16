@@ -1,7 +1,7 @@
 import { trpc } from "@/utils/trpc";
 import { SimpleDialog, DialogClose } from "ui/components/dialog";
 import { textArea } from "ui/components/textarea";
-import { Button, button } from "ui/components/button";
+import { Button, buttonVariants } from "ui/components/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -84,13 +84,13 @@ function Content({ setValue }: { setValue: (s: string) => void }) {
       {isGenerated ? (
         <div className="flex flex-row gap-3 justify-end">
           <DialogClose
-            className={button({ color: "primary" })}
+            className={buttonVariants({ color: "primary" })}
             onClick={() => setValue(result)}
           >
             Accept Result
           </DialogClose>
           <button
-            className={button({ color: "secondary" })}
+            className={buttonVariants({ color: "secondary" })}
             onClick={() => mutation.reset()}
           >
             Again
