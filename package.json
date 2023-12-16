@@ -5,7 +5,7 @@
   "scripts": {
     "start": "dotenv -- turbo start",
     "dev": "dotenv -- turbo dev",
-    "build": "dotenv -- turbo build",
+    "build": "dotenv -- turbo clean &&  turbo build",
     "lint": "turbo lint",
     "db:push": "dotenv -- drizzle-kit push:pg",
     "db:generate": "dotenv -- drizzle-kit generate:pg",
