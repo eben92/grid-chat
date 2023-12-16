@@ -30,6 +30,9 @@
       "persistent": true,
       "cache": false
     },
+    "clean": {
+      "cache": false
+    },
     "db:push": {},
     "db:generate": {}
   }

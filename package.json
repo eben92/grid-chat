@@ -9,7 +9,8 @@
     "lint": "turbo lint",
     "db:push": "dotenv -- drizzle-kit push:pg",
     "db:generate": "dotenv -- drizzle-kit generate:pg",
-    "db:pull": "dotenv -- drizzle-kit introspect:pg"
+    "db:pull": "dotenv -- drizzle-kit introspect:pg",
+    "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
