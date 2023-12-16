@@ -5,7 +5,7 @@
   "scripts": {
     "start": "dotenv -- turbo start",
     "dev": "dotenv -- turbo dev",
-    "build": "dotenv -- turbo clean &&  turbo build",
+    "build": "dotenv -- turbo build",
     "lint": "turbo lint",
     "db:push": "dotenv -- drizzle-kit push:pg",
     "db:generate": "dotenv -- drizzle-kit generate:pg",
@@ -29,5 +29,9 @@
     "@types/node": "18.11.18",
     "drizzle-kit": "^0.19.5",
     "typescript": "^5.2.2"
+  },
+  "packageManager": "pnpm@8.10.2",
+  "engines": {
+    "node": ">=18"
   }
 }
