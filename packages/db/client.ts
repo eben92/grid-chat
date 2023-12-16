@@ -15,7 +15,7 @@ neonConfig.fetchConnectionCache = true;
 //   prepare: false,
 // });
 
-const client = neon(connectionString, { isolationLevel: "Serializable" });
+const client = neon(connectionString);
 
 const db = drizzle(client);
 
