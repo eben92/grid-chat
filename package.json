@@ -29,7 +29,7 @@
     "drizzle-kit": "^0.19.5",
     "typescript": "^5.2.2"
   },
-  "packageManager": "pnpm@8.9.0",
+  "packageManager": "pnpm@8.10.2",
   "engines": {
     "node": ">=18"
   }
