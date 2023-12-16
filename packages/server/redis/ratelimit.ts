@@ -3,19 +3,15 @@ import { Ratelimit } from "@upstash/ratelimit";
 import redis from "./client";
 import { Context } from "../trpc";
 
-export const createTRPCUpstashLimiter: any = defineTRPCLimiter({
-  store: (opts) => {
-    if (process.env.NODE_ENV === "development") return null;
-
-    return new Ratelimit({
+export const createTRPCUpstashLimiter = defineTRPCLimiter({
+  store: (opts) =>
+    new Ratelimit({
       redis,
       limiter: Ratelimit.slidingWindow(opts.max, `${opts.windowMs} ms`),
-    });
-  },
+    }),
   async isBlocked(store, fingerprint) {
-    if (store == null) return null;
-    const { success, ...rest } = await store.limit(fingerprint);
-
+    const { success, pending, ...rest } = await store.limit(fingerprint);
+    await pending;
     return success ? null : rest;
   },
 });
