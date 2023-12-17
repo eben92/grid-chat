@@ -167,7 +167,7 @@ export const groupRouter = router({
 
       const res = await checkIsOwnerOf(input.groupId, ctx.session);
 
-      p_db.transaction(async (tx) => {
+      await p_db.transaction(async (tx) => {
         await tx.delete(groups).where(eq(groups.id, input.groupId));
 
         await tx
