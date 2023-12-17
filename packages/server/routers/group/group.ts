@@ -20,13 +20,21 @@ import { and, desc, eq, gt, sql } from "drizzle-orm";
 import { requireOne } from "db/utils";
 import { pick } from "shared/common";
 
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { Pool } from "@neondatabase/serverless";
+
 export const groupRouter = router({
   create: protectedProcedure
     .input(createGroupSchema)
-    .mutation(({ ctx, input }) => {
-      return db.transaction(async () => {
+    .mutation(async ({ ctx, input }) => {
+      const pool = new Pool({
+        connectionString: process.env.DATABASE_URL as string,
+      });
+      const p_db = drizzle(pool);
+
+      const g = await p_db.transaction(async (tx) => {
         const channel_id = createId();
-        const group_id = await db
+        const group_id = await tx
           .insert(groups)
           .values({
             channel_id,
@@ -37,12 +45,16 @@ export const groupRouter = router({
           .returning({ insertId: groups.id })
           .then((res) => Number(res[0].insertId));
 
-        await db.insert(messageChannels).values({
+        await tx.insert(messageChannels).values({
           id: channel_id,
         });
 
         return await joinMember(group_id, ctx.session.user.id);
       });
+
+      await pool.end();
+
+      return g;
     }),
   all: protectedProcedure.query(({ ctx }) =>
     getGroupsWithNotifications(ctx.session.user.id)
@@ -148,21 +160,28 @@ export const groupRouter = router({
   delete: protectedProcedure
     .input(z.object({ groupId: z.number() }))
     .mutation(async ({ ctx, input }) => {
+      const pool = new Pool({
+        connectionString: process.env.DATABASE_URL as string,
+      });
+      const p_db = drizzle(pool);
+
       const res = await checkIsOwnerOf(input.groupId, ctx.session);
 
-      db.transaction(async () => {
-        await db.delete(groups).where(eq(groups.id, input.groupId));
+      p_db.transaction(async (tx) => {
+        await tx.delete(groups).where(eq(groups.id, input.groupId));
 
-        await db
+        await tx
           .delete(messages)
           .where(eq(messages.channel_id, res[0].channel_id));
 
-        await db.delete(members).where(eq(members.group_id, input.groupId));
+        await tx.delete(members).where(eq(members.group_id, input.groupId));
 
-        await db
+        await tx
           .delete(groupInvites)
           .where(eq(groupInvites.group_id, input.groupId));
       });
+
+      await pool.end();
 
       await channels.group.group_deleted.publish([input.groupId], {
         id: input.groupId,
@@ -233,7 +252,12 @@ async function joinMember(groupId: number, userId: string) {
 }
 
 async function getGroupsWithNotifications(userId: string) {
-  const result = await db
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL as string,
+  });
+  const p_db = drizzle(pool);
+
+  const result = await p_db
     .select({
       group: groups,
       last_message: pick(messages, "content"),
@@ -251,11 +275,11 @@ async function getGroupsWithNotifications(userId: string) {
     result.map((row) => [row.group.channel_id, userId])
   );
 
-  return await db.transaction(
-    async () => {
+  const g = await p_db.transaction(
+    async (tx) => {
       const groups = result.map(async ({ group, last_message }, i) => {
         const last_read = last_reads[i];
-        const result = await db
+        const result = await tx
           .select({
             count: sql<string>`count(*)`,
           })
@@ -282,4 +306,7 @@ async function getGroupsWithNotifications(userId: string) {
       accessMode: "read only",
     }
   );
+
+  await pool.end();
+  return g;
 }
