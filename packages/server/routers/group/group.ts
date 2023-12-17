@@ -20,11 +20,19 @@ import { and, desc, eq, gt, sql } from "drizzle-orm";
 import { requireOne } from "db/utils";
 import { pick } from "shared/common";
 
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { Pool } from "@neondatabase/serverless";
+
 export const groupRouter = router({
   create: protectedProcedure
     .input(createGroupSchema)
-    .mutation(({ ctx, input }) => {
-      return db.transaction(async () => {
+    .mutation(async ({ ctx, input }) => {
+      const pool = new Pool({
+        connectionString: process.env.DATABASE_URL as string,
+      });
+      const p_db = drizzle(pool);
+
+      const g = await p_db.transaction(async () => {
         const channel_id = createId();
         const group_id = await db
           .insert(groups)
@@ -43,6 +51,10 @@ export const groupRouter = router({
 
         return await joinMember(group_id, ctx.session.user.id);
       });
+
+      await pool.end();
+
+      return g;
     }),
   all: protectedProcedure.query(({ ctx }) =>
     getGroupsWithNotifications(ctx.session.user.id)

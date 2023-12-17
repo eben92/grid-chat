@@ -224,6 +224,9 @@ importers:
       '@inworld/nodejs-sdk':
         specifier: 1.4.0
         version: 1.4.0
+      '@neondatabase/serverless':
+        specifier: ^0.6.0
+        version: 0.6.0
       '@paralleldrive/cuid2':
         specifier: ^2.2.0
         version: 2.2.0
