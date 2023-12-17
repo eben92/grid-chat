@@ -20,23 +20,31 @@ import {
 
 const userProfileKeys = ["id", "name", "image"] as const;
 
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { Pool } from "@neondatabase/serverless";
+
 export const chatRouter = router({
   send: protectedProcedure
     .input(messageSchema)
     .mutation(async ({ input, ctx }) => {
+      const pool = new Pool({
+        connectionString: process.env.DATABASE_URL as string,
+      });
+      const p_db = drizzle(pool);
+
       const { type, data } = await checkChannelPermissions(
         input.channelId,
         ctx.session
       );
 
       const embeds = await getEmbeds(input.content);
-      const { message, is_new_dm } = await db.transaction(async () => {
+      const { message, is_new_dm } = await p_db.transaction(async (tx) => {
         const message = await createMessage(input, ctx.session.user.id, embeds);
 
         let is_new_dm = false;
 
         if (type === "dm") {
-          const result = await db
+          const result = await tx
             .update(directMessageInfos)
             .set({
               open: true,
@@ -58,6 +66,8 @@ export const chatRouter = router({
           is_new_dm,
         };
       });
+
+      await pool.end();
 
       if (type === "dm" && is_new_dm) {
         await channels.private.open_dm.publish([data.to_user_id], {

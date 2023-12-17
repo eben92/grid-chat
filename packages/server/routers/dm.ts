@@ -15,6 +15,9 @@ import { createId } from "@paralleldrive/cuid2";
 import { requireOne } from "db/utils";
 import { channels } from "../ably";
 
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { Pool } from "@neondatabase/serverless";
+
 export const dmRouter = router({
   info: protectedProcedure
     .input(z.object({ channelId: z.string() }))
@@ -43,7 +46,12 @@ export const dmRouter = router({
       return res[0];
     }),
   channels: protectedProcedure.query(async ({ ctx }) => {
-    const channels = await db
+    const pool = new Pool({
+      connectionString: process.env.DATABASE_URL as string,
+    });
+    const p_db = drizzle(pool);
+
+    const channels = await p_db
       .select({
         id: directMessageInfos.channel_id,
         user: pick(users, "name", "image", "id"),
@@ -68,12 +76,12 @@ export const dmRouter = router({
       channels.map((c) => [c.id, ctx.session.user.id])
     );
 
-    return await db.transaction(
-      async () => {
+    const res = await p_db.transaction(
+      async (tx) => {
         const result = channels.map(async (channel, i) => {
           const last_read = lastReads[i];
 
-          const unread_messages = await db
+          const unread_messages = await tx
             .select({
               count: sql<string>`count(*)`,
             })
@@ -100,13 +108,21 @@ export const dmRouter = router({
         isolationLevel: "read committed",
       }
     );
+
+    await pool.end();
+    return res;
   }),
   open: protectedProcedure
     .input(z.object({ userId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const res = await db
-        .transaction(async () => {
-          const updated = await db
+      const pool = new Pool({
+        connectionString: process.env.DATABASE_URL as string,
+      });
+      const p_db = drizzle(pool);
+
+      const res = await p_db
+        .transaction(async (tx) => {
+          const updated = await tx
             .update(directMessageInfos)
             .set({ open: true })
             .where(
@@ -120,13 +136,13 @@ export const dmRouter = router({
             const id = createId();
 
             await Promise.all([
-              db
+              tx
                 .insert(messageChannels)
                 .values({
                   id,
                 })
                 .onConflictDoNothing(),
-              db
+              tx
                 .insert(directMessageInfos)
                 .values({
                   channel_id: id,
@@ -134,7 +150,7 @@ export const dmRouter = router({
                   to_user_id: input.userId,
                 })
                 .onConflictDoNothing(),
-              db
+              tx
                 .insert(directMessageInfos)
                 .values({
                   channel_id: id,
@@ -145,7 +161,7 @@ export const dmRouter = router({
             ]);
           }
 
-          return await db
+          return await tx
             .select({
               id: directMessageInfos.channel_id,
               user: users,
@@ -161,6 +177,8 @@ export const dmRouter = router({
             .limit(1);
         })
         .then((res) => requireOne(res));
+
+      await pool.end();
 
       await channels.private.open_dm.publish([ctx.session.user.id], {
         ...res,
