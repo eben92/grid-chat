@@ -30,7 +30,7 @@ This repository is a monorepo ([Turborepo](https://turbo.build/)).
 
 ## TODO
 
-- [ ] migrate from PlanetScale to NEON DB
+- [x] migrate from PlanetScale to NEON DB
 - [ ] add Google OAuth
 
 ## Play with it Locally
