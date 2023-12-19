@@ -15,7 +15,9 @@ export default withAuth(
     const isAuthPage = pathname.startsWith("/auth");
     const sensitiveRoutes = ["/home", "/settings", "/chat", "/dm"];
 
-    console.log("pathname", pathname);
+    console.log("pathname", pathname, "\n");
+    console.log("fullURL", fullURL, "\n");
+    console.log("token", token);
 
     const decodedCallbackUrl = encodeUrl(fullURL).toString("utf-8"); // your large string here
     // const buffer = Buffer.from(largeString, 'utf-8'); // convert the string to a Buffer object
@@ -23,7 +25,7 @@ export default withAuth(
     // const decodedString = buffer.toString('utf-8'); // decode the buffer back to a string when needed
 
     if (isAuthPage && isAuth) {
-      return NextResponse.redirect(new URL("/", req.url));
+      return NextResponse.redirect(new URL("/home", req.url));
     }
 
     if (

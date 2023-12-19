@@ -10,11 +10,11 @@ export default async function SignInPage({
 }: {
   searchParams: Record<string, string>;
 }) {
-  const session = await getServerSession(authOptions);
+  // const session = await getServerSession(authOptions);
 
-  if (session) {
-    redirect(searchParams.callbackUrl ?? "/home");
-  }
+  // if (session) {
+  //   redirect(searchParams.callbackUrl ?? "/home");
+  // }
 
   const providers = await getProviders().then((res) =>
     Object.values(res ?? {})
