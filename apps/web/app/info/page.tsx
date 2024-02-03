@@ -39,7 +39,7 @@ export default async function InfoPage() {
           </p>
           <div className="flex flex-row gap-3 mt-auto">
             <Link
-              href="https://github.com/rhutmann/grid-chat#grid-chat"
+              href="https://github.com/eben96/grid-chat#grid-chat"
               target="_blank"
             >
               See Tech Stack <ArrowRightIcon className="inline w-5 h-5" />
@@ -52,7 +52,7 @@ export default async function InfoPage() {
             Feel free to star the repository if you like it
           </p>
           <div className="flex flex-row gap-3 mt-auto">
-            <Link href="https://github.com/rhutmann/grid-chat" target="_blank">
+            <Link href="https://github.com/eben96/grid-chat" target="_blank">
               Go to Github <ArrowRightIcon className="inline w-5 h-5" />
             </Link>
           </div>
@@ -121,7 +121,7 @@ function Hero() {
         </Link>
 
         <Link
-          href="https://github.com/rhutmann/grid-chat"
+          href="https://github.com/eben96/grid-chat"
           target="_blank"
           className="text-accent-50 bg-dark-700 font-medium text-base px-8 py-2.5 rounded-lg flex flex-row items-center"
         >
